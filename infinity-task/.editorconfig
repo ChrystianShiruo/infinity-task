@@ -1,0 +1,154 @@
+# =====================================
+# DoFactory C# Coding Standards
+# =====================================
+root = true
+
+[*.cs]
+
+# -------------------------------------
+# Indentation & spacing
+# -------------------------------------
+indent_style = space
+indent_size = 4
+tab_width = 4
+
+# -------------------------------------
+# New lines & braces (Allman style)
+# -------------------------------------
+csharp_new_line_before_open_brace = all
+csharp_new_line_before_else = true
+csharp_new_line_before_catch = true
+csharp_new_line_before_finally = true
+csharp_new_line_before_members_in_object_initializers = true
+csharp_new_line_before_members_in_anonymous_types = true
+csharp_new_line_between_query_expression_clauses = true
+
+# -------------------------------------
+# Using directives
+# -------------------------------------
+dotnet_sort_system_directives_first = true
+dotnet_separate_import_directive_groups = true
+
+# -------------------------------------
+# Type keywords (int, string, etc.)
+# -------------------------------------
+dotnet_style_predefined_type_for_locals_parameters_members = true:suggestion
+dotnet_style_predefined_type_for_member_access = true:suggestion
+
+# -------------------------------------
+# var usage
+# Avoid for built-in types, allow elsewhere
+# -------------------------------------
+csharp_style_var_for_built_in_types = false:suggestion
+csharp_style_var_when_type_is_apparent = true:suggestion
+csharp_style_var_elsewhere = true:suggestion
+
+# -------------------------------------
+# Accessibility modifiers
+# Always explicit (public, private, etc.)
+# -------------------------------------
+dotnet_style_require_accessibility_modifiers = always:suggestion
+
+# -------------------------------------
+# Expression-bodied members
+# -------------------------------------
+csharp_style_expression_bodied_methods = false:suggestion
+csharp_style_expression_bodied_constructors = false:suggestion
+csharp_style_expression_bodied_operators = false:suggestion
+csharp_style_expression_bodied_properties = true:suggestion
+csharp_style_expression_bodied_accessors = true:suggestion
+
+# -------------------------------------
+# Parentheses for clarity
+# -------------------------------------
+dotnet_style_parentheses_in_arithmetic_binary_operators = always_for_clarity:suggestion
+dotnet_style_parentheses_in_relational_binary_operators = always_for_clarity:suggestion
+dotnet_style_parentheses_in_other_binary_operators = never_if_unnecessary:suggestion
+dotnet_style_parentheses_in_other_operators = never_if_unnecessary:suggestion
+
+# -------------------------------------
+# Naming styles
+# -------------------------------------
+
+# PascalCase
+dotnet_naming_style.pascal_case.capitalization = pascal_case
+
+# camelCase
+dotnet_naming_style.camel_case.capitalization = camel_case
+
+# _camelCase (private fields)
+dotnet_naming_style.private_field_style.capitalization = camel_case
+dotnet_naming_style.private_field_style.required_prefix = _
+
+# I + PascalCase (interfaces)
+dotnet_naming_style.interface_style.capitalization = pascal_case
+dotnet_naming_style.interface_style.required_prefix = I
+
+# -------------------------------------
+# Naming symbols
+# -------------------------------------
+
+# Types
+dotnet_naming_symbols.types.applicable_kinds = class, struct, enum
+dotnet_naming_symbols.types.applicable_accessibilities = *
+
+# Interfaces
+dotnet_naming_symbols.interfaces.applicable_kinds = interface
+dotnet_naming_symbols.interfaces.applicable_accessibilities = *
+
+# Methods
+dotnet_naming_symbols.methods.applicable_kinds = method
+dotnet_naming_symbols.methods.applicable_accessibilities = *
+
+# Properties
+dotnet_naming_symbols.properties.applicable_kinds = property
+dotnet_naming_symbols.properties.applicable_accessibilities = *
+
+# Locals
+dotnet_naming_symbols.locals.applicable_kinds = local
+
+# Parameters
+dotnet_naming_symbols.parameters.applicable_kinds = parameter
+
+# Private fields
+dotnet_naming_symbols.private_fields.applicable_kinds = field
+dotnet_naming_symbols.private_fields.applicable_accessibilities = private
+
+# -------------------------------------
+# Naming rules
+# -------------------------------------
+
+# Types -> PascalCase
+dotnet_naming_rule.types_should_be_pascal_case.symbols = types
+dotnet_naming_rule.types_should_be_pascal_case.style = pascal_case
+dotnet_naming_rule.types_should_be_pascal_case.severity = suggestion
+
+# Interfaces -> I + PascalCase
+dotnet_naming_rule.interfaces_should_start_with_i.symbols = interfaces
+dotnet_naming_rule.interfaces_should_start_with_i.style = interface_style
+dotnet_naming_rule.interfaces_should_start_with_i.severity = suggestion
+
+# Methods -> PascalCase
+dotnet_naming_rule.methods_should_be_pascal_case.symbols = methods
+dotnet_naming_rule.methods_should_be_pascal_case.style = pascal_case
+dotnet_naming_rule.methods_should_be_pascal_case.severity = suggestion
+
+# Properties -> PascalCase
+dotnet_naming_rule.properties_should_be_pascal_case.symbols = properties
+dotnet_naming_rule.properties_should_be_pascal_case.style = pascal_case
+dotnet_naming_rule.properties_should_be_pascal_case.severity = suggestion
+
+# Locals -> camelCase
+dotnet_naming_rule.locals_should_be_camel_case.symbols = locals
+dotnet_naming_rule.locals_should_be_camel_case.style = camel_case
+dotnet_naming_rule.locals_should_be_camel_case.severity = suggestion
+
+# Parameters -> camelCase
+dotnet_naming_rule.parameters_should_be_camel_case.symbols = parameters
+dotnet_naming_rule.parameters_should_be_camel_case.style = camel_case
+dotnet_naming_rule.parameters_should_be_camel_case.severity = suggestion
+
+# Private fields -> _camelCase
+dotnet_naming_rule.private_fields_should_have_underscore.symbols = private_fields
+dotnet_naming_rule.private_fields_should_have_underscore.style = private_field_style
+dotnet_naming_rule.private_fields_should_have_underscore.severity = suggestion
