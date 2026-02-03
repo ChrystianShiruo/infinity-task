@@ -12,15 +12,15 @@ namespace Task.Tools
     {
 
         [Header("Bezier Control Points (local space)")]
-        public Vector2 startPoint = new Vector2(-2, 0);
-        public Vector2 controlPoint1 = new Vector2(-1, 2);
-        public Vector2 controlPoint2 = new Vector2(1, 2);
-        public Vector2 endPoint = new Vector2(2, 0);
+        [SerializeField] private Vector2 _startPoint = new Vector2(-2, 0);
+        [SerializeField] private Vector2 _controlPoint1 = new Vector2(-1, 2);
+        [SerializeField] private Vector2 _controlPoint2 = new Vector2(1, 2);
+        [SerializeField] private Vector2 _endPoint = new Vector2(2, 0);
 
 
         [Header("Sampling")]
         [Range(8, 300)]
-        public int segments = 60;
+        [SerializeField] private int segments = 60;
 
 
         private LineRenderer _line;
@@ -44,16 +44,16 @@ namespace Task.Tools
             Gizmos.matrix = transform.localToWorldMatrix;
 
             Gizmos.color = Color.gray;
-            Gizmos.DrawLine(startPoint, controlPoint1);
-            Gizmos.DrawLine(endPoint, controlPoint2);
+            Gizmos.DrawLine(_startPoint, _controlPoint1);
+            Gizmos.DrawLine(_endPoint, _controlPoint2);
 
             Gizmos.color = Color.yellow;
-            Gizmos.DrawSphere(startPoint, 0.05f);
-            Gizmos.DrawSphere(endPoint, 0.05f);
+            Gizmos.DrawSphere(_startPoint, 0.05f);
+            Gizmos.DrawSphere(_endPoint, 0.05f);
 
             Gizmos.color = Color.cyan;
-            Gizmos.DrawSphere(controlPoint1, 0.05f);
-            Gizmos.DrawSphere(controlPoint2, 0.05f);
+            Gizmos.DrawSphere(_controlPoint1, 0.05f);
+            Gizmos.DrawSphere(_controlPoint2, 0.05f);
 
             Gizmos.matrix = oldMatrix;
         }
@@ -81,10 +81,10 @@ namespace Task.Tools
             float u = 1f - t;
 
             return
-                u * u * u * startPoint +
-                3f * u * u * t * controlPoint1 +
-                3f * u * t * t * controlPoint2 +
-                t * t * t * endPoint;
+                u * u * u * _startPoint +
+                3f * u * u * t * _controlPoint1 +
+                3f * u * t * t * _controlPoint2 +
+                t * t * t * _endPoint;
         }
 #endif
 
