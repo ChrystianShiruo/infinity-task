@@ -1,14 +1,17 @@
 ﻿using System;
 
+using Task.Level.Part;
+
 using UnityEngine;
 
 namespace Task.InGame
 {
-    public class LevelEvents : MonoBehaviour
+    public class LevelEvents
     {
         
-        public Action<bool> OnPartClicked;
-        public Action<bool> OnLevelCompleted;
+        public Action<BaseLevelElement> OnPartClicked;
+        public Action<BaseLevelElement> OnPartChanged;
+        public Action OnLevelCompleted;
 
 
 

@@ -164,7 +164,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _levels: {fileID: 11400000, guid: 4f8b92c6b430c984a9e8eba63029ad1c, type: 2}
-  _colorData: {fileID: 11400000, guid: 479dcffd2bcbf6a4eb19b8d2bee09cfc, type: 2}
+  _levelVisualData: {fileID: 11400000, guid: 7293c18289492264dbc80ae034d95326, type: 2}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0

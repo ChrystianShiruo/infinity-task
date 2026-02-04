@@ -6,7 +6,7 @@ using UnityEditor;
 
 namespace Task.Data
 {
-    [CreateAssetMenu(fileName = "SceneReferences", menuName = "Data/SceneReferences", order = 1)]
+    [CreateAssetMenu(fileName = "SceneReferences", menuName = "Data/SceneReferences")]
 
     public class SceneReferences : ScriptableObject
     {
