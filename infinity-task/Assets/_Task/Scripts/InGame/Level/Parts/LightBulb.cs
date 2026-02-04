@@ -1,11 +1,13 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+
+using UnityEngine;
 
 namespace Task.Level.Part
 {
-    public class LightBulb : BaseLevelElement
+    public class LightBulb : StaticElement
     {
-        protected override void OnElementClicked()
-        {            
+        protected override void OnTogglePower(bool on)
+        {
         }
     }
 }

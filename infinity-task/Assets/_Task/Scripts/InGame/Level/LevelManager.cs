@@ -1,24 +1,31 @@
+using System;
 using System.Collections;
-
-using Task.Data;
-using Task.Data.Visual;
-
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Task.Data;
+using Task.Data.Visual;
+using Task.Level.Part;
 
-namespace Task.InGame
+namespace Task.InGame.Managers
 {
     public class LevelManager : MonoBehaviour
     {
         public static LevelManager Instance;
         public LevelEvents LevelEvents { get => _levelEvents; }
-        public ColorData ColorData { get => _colorData;}
+        public LevelVisualSettings LevelVisualData { get => _levelVisualData; }
 
         [SerializeField] private SceneReferences _levels;
-        [SerializeField] private ColorData _colorData;
+        [SerializeField] private LevelVisualSettings _levelVisualData;
 
         private LevelEvents _levelEvents;
+        private int _loadedLevelReferenceIndex = -1;
 
+
+        private Dictionary<Vector2Int, List<BaseLevelElement>> _connectionDictionary;//Stores every element that currently connects to a specific point;
+        private Vector2Int[] _energySourcePositions;
+        private List<BaseLevelElement> _elementsList;//Wether connections are on/off
+        private LightBulb[] _energyTargets; // we need to power up these
 
         private void Awake()
         {
@@ -28,18 +35,174 @@ namespace Task.InGame
                 return;
             }
             Instance = this;
+            _levelEvents = new LevelEvents();
         }
         private void Start()
         {
             StartCoroutine(LoadNewLevel(0));
         }
-
-
-        private IEnumerator LoadNewLevel(int i)
+        private void OnEnable()
         {
-            Debug.Log(_levels.levelScenes[i]);
-            yield return SceneManager.LoadSceneAsync(_levels.levelScenes[i].buildIndex, LoadSceneMode.Additive);
+            LevelEvents.OnPartChanged += UpdateConnections;
+            LevelEvents.OnLevelCompleted += LoadNextLevel;
         }
 
+        private void OnDisable()
+        {
+            LevelEvents.OnPartChanged -= UpdateConnections;
+            LevelEvents.OnLevelCompleted -= LoadNextLevel;
+        }
+
+        private void LoadNextLevel()
+        {
+            StartCoroutine(LoadNewLevel(_loadedLevelReferenceIndex + 1));
+        }
+        //Load level scene and setup initial connections state 
+        private IEnumerator LoadNewLevel(int i)
+        {
+            if(i >= _levels.levelScenes.Length || i < 0)
+            {
+                //TODO: handle last level completion
+                Debug.LogError($"Invalid level index value: {i}");
+                yield break;
+            }
+            if(_loadedLevelReferenceIndex != -1)
+            {
+                Debug.Log($"Unload Level of build id {_loadedLevelReferenceIndex}");
+                yield return SceneManager.UnloadSceneAsync(_levels.levelScenes[_loadedLevelReferenceIndex].buildIndex);
+            }
+
+            Debug.Log($"Load Level {_levels.levelScenes[i].sceneName} of build id {_levels.levelScenes[i].buildIndex}");
+            yield return SceneManager.LoadSceneAsync(_levels.levelScenes[i].buildIndex, LoadSceneMode.Additive);
+            _loadedLevelReferenceIndex = i;
+            Debug.Log(_loadedLevelReferenceIndex);
+
+            var levelElements = FindObjectsByType<BaseLevelElement>(FindObjectsSortMode.None);      
+            _elementsList = new List<BaseLevelElement>();
+            _connectionDictionary = new Dictionary<Vector2Int, List<BaseLevelElement>>();
+
+            foreach(var element in levelElements)//populate connections dictionary
+            {
+                var elementConnections = element.UpdateConnectorPositions();
+                _elementsList.Add(element);
+                element.TogglePower(false);
+
+                foreach(var connectionPosition in elementConnections)
+                {
+                    if(!_connectionDictionary.ContainsKey(connectionPosition))
+                    {
+                        _connectionDictionary.Add(connectionPosition, new List<BaseLevelElement>());
+                    }
+                    _connectionDictionary[connectionPosition].Add(element);
+                }
+            }
+
+            var energySources = FindObjectsByType<EnergySource>(FindObjectsSortMode.None);//TODO: cache references
+            _energySourcePositions = new Vector2Int[energySources.Length];
+            for(int j = 0; j < energySources.Length; j++)
+            {
+                _energySourcePositions[j] = (Vector2Int.RoundToInt(energySources[j].transform.position));
+                energySources[j].transform.position = (Vector2)Vector2Int.RoundToInt(energySources[j].transform.position);
+            }
+
+            _energyTargets = FindObjectsByType<LightBulb>(FindObjectsSortMode.None);//TODO: cache references
+
+            EvaluateLevel();
+        }
+
+        private void UpdateConnections(BaseLevelElement element)
+        {
+            foreach(var connectionPosition in element.ConnectorPositions)
+            {
+                if(_connectionDictionary.TryGetValue(connectionPosition, out var connectedElements))
+                {
+                    if(connectedElements.Remove(element))
+                    {
+                        if(connectedElements.Count == 0)
+                        {
+                            _connectionDictionary.Remove(connectionPosition);
+                        }
+                    }
+                }
+            }
+            element.UpdateConnectorPositions();
+
+            foreach(var connectionPosition in element.ConnectorPositions)
+            {
+                if(!_connectionDictionary.ContainsKey(connectionPosition))
+                {
+                    _connectionDictionary.Add(connectionPosition, new List<BaseLevelElement>());
+                }
+                _connectionDictionary[connectionPosition].Add(element);
+            }
+
+            EvaluateLevel();
+        }
+
+        /// <summary>
+        /// Check if we completed the level
+        /// </summary>
+        private void EvaluateLevel()
+        {
+            ResetPower();
+            RunPowerUp();
+
+            bool success = true;
+            int remainingTargets = 0;
+
+            foreach(var item in _energyTargets)
+            {
+                if(!item.Powered)
+                {
+                    remainingTargets++;
+                    success = false;
+                }
+            }
+
+//#if UNITY_EDITOR
+//            if(remainingTargets > 0) Debug.Log($"{remainingTargets} energy targets remaining");
+//#endif
+
+            if(success)
+            {
+                LevelEvents.OnLevelCompleted?.Invoke();
+            }
+        }
+
+        private void ResetPower()
+        {
+            foreach(var item in _elementsList)
+            {
+                item.TogglePower(false);
+            }
+        }
+        private void RunPowerUp()
+        {
+            Queue<Vector2Int> nodesCheck = new Queue<Vector2Int>();
+
+            foreach(var sourcePos in _energySourcePositions)
+            {
+                nodesCheck.Enqueue(sourcePos);
+            }
+            while(nodesCheck.Count > 0)
+            {
+                Vector2Int currentPos = nodesCheck.Dequeue();
+
+                if(_connectionDictionary.TryGetValue(currentPos, out var elementsAtPos))
+                {
+                    foreach(var element in elementsAtPos)
+                    {
+                        if(!element.Powered)
+                        {
+                            element.TogglePower(true);
+                            foreach(var pin in element.ConnectorPositions)
+                            {
+                                nodesCheck.Enqueue(pin);
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }

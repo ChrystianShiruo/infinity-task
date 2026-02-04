@@ -1,10 +1,14 @@
-﻿namespace Task.Level.Part
+﻿using System.Collections.Generic;
+using System.Numerics;
+
+using UnityEngine;
+
+namespace Task.Level.Part
 {
-    public class EnergySource : BaseLevelElement
+    public class EnergySource : StaticElement
     {
-        protected override void OnElementClicked()
-        {
-            throw new System.NotImplementedException("implement invalid interaction feedback");
+        protected override void OnTogglePower(bool on)
+        {            
         }
     }
 }

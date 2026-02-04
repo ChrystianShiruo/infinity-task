@@ -1,12 +1,11 @@
-﻿using UnityEngine;
+﻿using Task.InGame;
+
+using UnityEngine;
 
 namespace Task.Level.Part
 {
-    public class Curve : BaseLevelElement
+    public class Curve : PathElement
     {
-        protected override void OnElementClicked()
-        {
-            transform.Rotate(90f * Vector3.forward);
-        }
+
     }
 }
