@@ -11,6 +11,7 @@ namespace Task.Tools
     public class BezierLineRenderer2D : MonoBehaviour
     {
 
+#if UNITY_EDITOR
         [Header("Bezier Control Points (local space)")]
         [SerializeField] private Vector2 _startPoint = new Vector2(-2, 0);
         [SerializeField] private Vector2 _controlPoint1 = new Vector2(-1, 2);
@@ -25,7 +26,6 @@ namespace Task.Tools
 
         private LineRenderer _line;
 
-#if UNITY_EDITOR
 
         private void OnValidate()
         {
@@ -91,7 +91,7 @@ namespace Task.Tools
         private void Awake()
         {
             // Editor only component
-            this.enabled = false;
+            Destroy(this);
         }
 
     }
