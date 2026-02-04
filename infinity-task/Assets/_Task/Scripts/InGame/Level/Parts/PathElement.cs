@@ -30,7 +30,6 @@ namespace Task.Level.Part
             return ConnectorPositions;
         }
 
-
         protected override bool OnTryElementInteraction()
         {
             transform.Rotate(90f * Vector3.forward);

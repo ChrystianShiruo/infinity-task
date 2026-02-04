@@ -57,7 +57,7 @@ namespace Task.InGame.Managers
         {
             StartCoroutine(LoadNewLevel(_loadedLevelReferenceIndex + 1));
         }
-        //Load level scene and setup initial connections state 
+
         private IEnumerator LoadNewLevel(int i)
         {
             if(i >= _levels.levelScenes.Length || i < 0)

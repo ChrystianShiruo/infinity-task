@@ -3,7 +3,6 @@ using UnityEngine;
 
 using Task.InGame.Managers;
 
-
 namespace Task.Level.Part
 {
     public abstract class BaseLevelElement : MonoBehaviour
@@ -16,8 +15,6 @@ namespace Task.Level.Part
         protected List<Vector2Int> connectorPositions;
 
         private bool _powered = false;
-
-
 
         public abstract List<Vector2Int> UpdateConnectorPositions();
         protected abstract bool OnTryElementInteraction();
@@ -50,10 +47,6 @@ namespace Task.Level.Part
             {
                 OnDenyElementInteraction();
             }
-
-
-
-            //TODO: evaluate
         }
 
         public void TogglePower(bool on)
@@ -68,7 +61,6 @@ namespace Task.Level.Part
 
             OnTogglePower(on);
         }        
-
 
         private void SetColor(Color color)
         {

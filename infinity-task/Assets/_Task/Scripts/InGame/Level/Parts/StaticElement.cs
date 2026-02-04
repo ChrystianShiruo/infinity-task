@@ -8,9 +8,6 @@ namespace Task.Level.Part
 {
     public abstract class StaticElement : BaseLevelElement
     {
-
-
-
         public override List<Vector2Int> UpdateConnectorPositions()
         {
             if(connectorPositions == null)
@@ -24,7 +21,6 @@ namespace Task.Level.Part
         {
             return false;
         }
-
 
         protected override void OnDenyElementInteraction()
         {

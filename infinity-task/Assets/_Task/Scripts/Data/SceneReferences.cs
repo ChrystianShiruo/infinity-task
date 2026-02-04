@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using UnityEngine.SceneManagement; // Needed for SceneUtility
+using UnityEngine.SceneManagement;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -21,14 +21,12 @@ namespace Task.Data
             {
                 if(scene != null && scene.sceneAsset != null)
                 {
-                    // 1. Update Name
                     if(scene.sceneName != scene.sceneAsset.name)
                     {
                         scene.sceneName = scene.sceneAsset.name;
                         isDirty = true;
                     }
 
-                    // 2. Update Build Index
                     string path = AssetDatabase.GetAssetPath(scene.sceneAsset);
                     int index = SceneUtility.GetBuildIndexByScenePath(path);
 
@@ -37,7 +35,6 @@ namespace Task.Data
                         scene.buildIndex = index;
                         isDirty = true;
 
-                        // Optional: Warn if scene is missing from build settings
                         if(index == -1)
                         {
                             Debug.LogWarning($"Scene '{scene.sceneName}' is not in Build Settings! Index will be -1.");
