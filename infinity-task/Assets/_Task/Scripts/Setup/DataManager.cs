@@ -24,7 +24,6 @@ namespace Task.Core
         public static void SaveJson()
         {
             string data = JsonUtility.ToJson(_playerData);
-            Debug.Log(data);
             System.IO.File.WriteAllText($"{Application.persistentDataPath}/{_filename}.json", data);
         }
 
