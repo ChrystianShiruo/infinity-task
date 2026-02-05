@@ -1,5 +1,6 @@
 ﻿using System;
 
+using Task.Data;
 using Task.Level.Part;
 
 using UnityEngine;
@@ -10,6 +11,6 @@ namespace Task.InGame
     {
         public Action<BaseLevelElement> OnPartClicked;
         public Action<BaseLevelElement> OnPartChanged;
-        public Action OnLevelCompleted;
+        public Action<SceneReference, int> OnLevelCompleted;
     }
 }

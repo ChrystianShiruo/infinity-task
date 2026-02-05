@@ -31,7 +31,7 @@ public class AudioManager : MonoBehaviour
 
     public void PlayMusic(AudioReference audioReference)
     {
-        StartCoroutine(PrepareAndPlayAudio(new KeyValuePair<AudioSource, WaitWhile>(_musicAudioSource,null), audioReference));
+        StartCoroutine(PrepareAndPlayAudio(new KeyValuePair<AudioSource, WaitWhile>(_musicAudioSource, null), audioReference));
     }
 
 
@@ -84,16 +84,15 @@ public class AudioManager : MonoBehaviour
             var audiosource = Instantiate(_sfxSourcePrefab, transform).GetComponent<AudioSource>();
 
             StartCoroutine(LoadClip(audiosource, _audioReferences.sfx));
-            var availableAudioSource = new KeyValuePair<AudioSource, WaitWhile>(audiosource, new WaitWhile(()=>audiosource.isPlaying));
+            var availableAudioSource = new KeyValuePair<AudioSource, WaitWhile>(audiosource, new WaitWhile(() => audiosource.isPlaying));
             _availableSfxAudiosources.Enqueue(availableAudioSource);
         }
     }
     private void Play(AudioSource audioSource, AudioReference audioReference)
     {
         audioSource.volume = audioReference.volume;
-        audioSource.time = audioReference.startTime;
+        audioSource.SetScheduledStartTime(audioReference.startTime);
         audioSource.Play();
-        Debug.Log("play");
     }
     private IEnumerator PlaySfxRoutine(KeyValuePair<AudioSource, WaitWhile> audioSource, AudioReference audioReference)
     {
