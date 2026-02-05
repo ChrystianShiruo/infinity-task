@@ -167,6 +167,7 @@ namespace Task.InGame.Managers
         {
             ResetPower();
             RunPowerUp();
+            CheckForSparks();
 
             bool success = true;
             int remainingTargets = 0;
@@ -221,5 +222,33 @@ namespace Task.InGame.Managers
                 }
             }
         }
+
+        private void CheckForSparks()
+        {
+            List<Vector3> leakPositions = new List<Vector3>();
+
+            foreach(var element in _elementsList)
+            {
+                if(!element.Powered) continue;
+
+                foreach(var pos in element.ConnectorPositions)
+                {
+                    if(_connectionDictionary.TryGetValue(pos, out var connectedElements))
+                    {
+                        if(connectedElements.Count < 2)
+                        {
+
+                            leakPositions.Add(new Vector3(pos.x, pos.y, 0));
+                        }
+                    }
+                }
+            }
+            if(ParticleManager.Instance != null)
+            {
+                ParticleManager.Instance.EmitSparkAtLocations(leakPositions);
+            }
+        }
+
+
     }
 }
