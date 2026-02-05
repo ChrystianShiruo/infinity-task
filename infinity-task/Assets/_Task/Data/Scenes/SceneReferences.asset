@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef5b9ba66ff87664db81d30b8f632ea5, type: 3}
+  m_Name: SceneReferences
+  m_EditorClassIdentifier: 
+  mainScene:
+    sceneAsset: {fileID: 102900000, guid: d75b4692939fff44eb1eff1f53301606, type: 3}
+    sceneName: Main
+    buildIndex: 0
+  menuScene:
+    sceneAsset: {fileID: 102900000, guid: ef1a9002848ba8f47a9030973a9d2357, type: 3}
+    sceneName: Menu
+    buildIndex: 1
+  loadingScene:
+    sceneAsset: {fileID: 102900000, guid: 74642db4f0846604f8cd870c801e0c37, type: 3}
+    sceneName: Loading
+    buildIndex: 2
+  _orderedLevelScenes:
+  - sceneAsset: {fileID: 102900000, guid: a756c37eb29982a47b778c5e1936aebf, type: 3}
+    sceneName: Level 1
+    buildIndex: 3
+  - sceneAsset: {fileID: 102900000, guid: c07a98190345aee4c853b5cfb2ba92eb, type: 3}
+    sceneName: Level 2
+    buildIndex: 4
+  - sceneAsset: {fileID: 102900000, guid: c88f47e3372ca66439d650af4317a166, type: 3}
+    sceneName: Level 3
+    buildIndex: 5
