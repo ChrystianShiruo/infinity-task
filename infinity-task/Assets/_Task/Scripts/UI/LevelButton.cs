@@ -38,7 +38,6 @@ namespace Task.UI.Elements
 
         protected override void OnButtonClick()
         {
-            Amplitude.getInstance().logEvent("OnButtonClick");
 
             LevelManager.Instance.LoadLevel(_levelReference.buildIndex);
             StartCoroutine(Loader.Instance.UnloadMenu());
