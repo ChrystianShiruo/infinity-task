@@ -1,9 +1,6 @@
 ﻿using System;
-
 using Task.Data;
 using Task.Level.Part;
-
-using UnityEngine;
 
 namespace Task.InGame
 {

@@ -13,7 +13,7 @@ namespace Task.InGame.Managers
     public class LevelManager : MonoBehaviour
     {
         public static LevelManager Instance { get; private set; }
-        public LevelEvents LevelEvents { get => _levelEvents; }
+        public LevelEvents LevelEvents { get => _loader.LevelEvents; }
         public LevelVisualSettings LevelVisualData { get => _levelVisualData; }
         public SceneReference CurrentLevel { get => _currentLevel; }
 
@@ -22,7 +22,6 @@ namespace Task.InGame.Managers
         [SerializeField] private float _levelCompleteDelay = 2f;
 
 
-        private LevelEvents _levelEvents;
         private int _loadedLevelReferenceIndex = -1;
 
 
@@ -52,7 +51,6 @@ namespace Task.InGame.Managers
                 return;
             }
             Instance = this;
-            _levelEvents = new LevelEvents();
             DontDestroyOnLoad(this);
             _levelCompleteWaitForSeconds = new WaitForSeconds(_levelCompleteDelay);
         }
@@ -89,6 +87,7 @@ namespace Task.InGame.Managers
             if(i >= _loader.SceneReferences.OrderedLevelScenes.Count || i < 0)
             {
                 //TODO: handle last level completion
+                _loadedLevelReferenceIndex = -1;
                 yield return _loader.LoadMenu();
                 yield break;
             }

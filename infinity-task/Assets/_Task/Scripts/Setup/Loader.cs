@@ -12,11 +12,14 @@ namespace Task.Core
     {
         public static Loader Instance { get; private set; }
         public SceneReferences SceneReferences { get => _sceneReferences; }
+        public LevelEvents LevelEvents { get => _levelEvents; }
 
         public Action<SceneReference> OnSceneLoaded;
         public Action<SceneReference> OnSceneUnloaded;
 
         [SerializeField] private SceneReferences _sceneReferences;
+
+        private LevelEvents _levelEvents = new LevelEvents();
 
 
 
@@ -54,6 +57,8 @@ namespace Task.Core
                 return;
             }
             Instance = this;
+            
+
             DontDestroyOnLoad(this);
         }
 
