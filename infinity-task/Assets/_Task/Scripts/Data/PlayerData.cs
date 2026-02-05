@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 
+using Task.Core;
+
 using UnityEngine;
 
 
@@ -10,10 +12,15 @@ namespace Task.Data
     public class PlayerData
     {
         public List<LevelData> completedLevels;
+        public int lastCompletedLevelIndex = -1;
 
         public PlayerData()
         {
             completedLevels = new List<LevelData>();
+        }
+        public LevelData GetLevelDataBybuildIndex(int buildIndex)
+        {
+            return completedLevels.Find((ld) => ld.buildIndex == buildIndex);
         }
         public void LevelCompleted(SceneReference reference, int score)
         {
@@ -30,6 +37,11 @@ namespace Task.Data
             else
             {
                 completedLevels.Add(new LevelData(reference, score));
+                int orderIndex = Loader.Instance.SceneReferences.GetLevelIndex(reference.buildIndex);
+                if(orderIndex > lastCompletedLevelIndex )
+                {
+                    lastCompletedLevelIndex = orderIndex;
+                }
             }
             
         }

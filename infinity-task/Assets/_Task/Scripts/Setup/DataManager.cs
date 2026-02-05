@@ -11,11 +11,11 @@ namespace Task.Core
 {
     public class DataManager : MonoBehaviour
     {
+        public static DataManager Instance { get; private set; }
         public static PlayerData PlayerData { get => _playerData; }
 
         private static PlayerData _playerData = null;
 
-        public static DataManager instance = null;
 
 
         private static string _filename = "PlayerData";
@@ -52,12 +52,12 @@ namespace Task.Core
 
         private void Awake()
         {
-            if(instance != null)
+            if(Instance != null)
             {
                 Destroy(this);
                 return;
             }
-            instance = this;
+            Instance = this;
             DontDestroyOnLoad(this);
             _playerData = LoadJson();
 

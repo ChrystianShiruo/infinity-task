@@ -6,12 +6,13 @@ using Task.Data.Visual;
 using Task.Level.Part;
 using Task.Core;
 using Task.Data;
+using System.Linq;
 
 namespace Task.InGame.Managers
 {
     public class LevelManager : MonoBehaviour
     {
-        public static LevelManager Instance;
+        public static LevelManager Instance { get; private set; }
         public LevelEvents LevelEvents { get => _levelEvents; }
         public LevelVisualSettings LevelVisualData { get => _levelVisualData; }
         public SceneReference CurrentLevel { get => _currentLevel; }
@@ -30,8 +31,14 @@ namespace Task.InGame.Managers
         private LightBulb[] _energyTargets; // we need to power up these
         private SceneReference _currentLevel;
 
-        public void LoadLevel(int i)
+        public void LoadLevel(int buildIndex)
         {
+            int i = _loader.SceneReferences.GetLevelIndex(buildIndex);
+            if(i == -1)
+            {
+                Debug.LogError($"could not find buildIndex {buildIndex} on _orderedLevelScenes!");
+                return;
+            }
             StartCoroutine(LoadNewLevel(i));
 
         }
@@ -63,28 +70,26 @@ namespace Task.InGame.Managers
 
         private void LoadNextLevel(object _, int _1)
         {
-            StartCoroutine(LoadNewLevel(_loadedLevelReferenceIndex + 1));
+            StartCoroutine(LoadNewLevel(_loadedLevelReferenceIndex + 1, 2f));
         }
 
-        private IEnumerator LoadNewLevel(int i)
+        private IEnumerator LoadNewLevel(int i, float delay = 0f)
         {
-            if(i >= _loader.SceneReferences.LevelScenes.Count || i < 0)
-            {
-                //TODO: handle last level completion
-                Debug.LogError($"Invalid level index value: {i}");
-                yield break;
-            }
             if(_loadedLevelReferenceIndex != -1)
             {
                 Debug.Log($"Unload Level of build id {_loadedLevelReferenceIndex}");
-                //yield return SceneManager.UnloadSceneAsync(_loader.Levels.LevelScenes[_loadedLevelReferenceIndex].buildIndex);
-                yield return _loader.UnloadScene(_loader.SceneReferences.LevelScenes[_loadedLevelReferenceIndex].buildIndex);
+                yield return _loader.UnloadScene(_loader.SceneReferences.OrderedLevelScenes[_loadedLevelReferenceIndex]);
+            }
+            if(i >= _loader.SceneReferences.OrderedLevelScenes.Count || i < 0)
+            {
+                //TODO: handle last level completion
+                yield return _loader.LoadMenu();
+                yield break;
             }
 
-            Debug.Log($"Load Level {_loader.SceneReferences.LevelScenes[i].sceneName} of build id {_loader.SceneReferences.LevelScenes[i].buildIndex}");
-            //yield return SceneManager.LoadSceneAsync(_loader.Levels.LevelScenes[i].buildIndex, LoadSceneMode.Additive);
-            yield return _loader.LoadScene(_loader.SceneReferences.LevelScenes[i].buildIndex);
-            _currentLevel = _loader.SceneReferences.LevelScenes[i];
+            Debug.Log($"Load Level {_loader.SceneReferences.OrderedLevelScenes[i].sceneName} of build id {_loader.SceneReferences.OrderedLevelScenes[i].buildIndex}");
+            yield return _loader.LoadScene(_loader.SceneReferences.OrderedLevelScenes[i]);
+            _currentLevel = _loader.SceneReferences.OrderedLevelScenes[i];
             _loadedLevelReferenceIndex = i;
             Debug.Log(_loadedLevelReferenceIndex);
 
