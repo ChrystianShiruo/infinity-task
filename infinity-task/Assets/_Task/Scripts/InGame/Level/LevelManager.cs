@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 using Task.Data;
 using Task.Data.Visual;
 using Task.Level.Part;
+using Task.Core;
 
 namespace Task.InGame.Managers
 {
@@ -15,8 +16,9 @@ namespace Task.InGame.Managers
         public LevelEvents LevelEvents { get => _levelEvents; }
         public LevelVisualSettings LevelVisualData { get => _levelVisualData; }
 
-        [SerializeField] private SceneReferences _levels;
         [SerializeField] private LevelVisualSettings _levelVisualData;
+        [SerializeField] private Loader _loader;
+
 
         private LevelEvents _levelEvents;
         private int _loadedLevelReferenceIndex = -1;
@@ -27,6 +29,13 @@ namespace Task.InGame.Managers
         private List<BaseLevelElement> _elementsList;//Wether connections are on/off
         private LightBulb[] _energyTargets; // we need to power up these
 
+
+        public void LoadLevel(int i)
+        {
+            StartCoroutine(LoadNewLevel(i));
+
+        }
+
         private void Awake()
         {
             if(Instance != null)
@@ -36,11 +45,9 @@ namespace Task.InGame.Managers
             }
             Instance = this;
             _levelEvents = new LevelEvents();
+            DontDestroyOnLoad(this);
         }
-        private void Start()
-        {
-            StartCoroutine(LoadNewLevel(0));
-        }
+        
         private void OnEnable()
         {
             LevelEvents.OnPartChanged += UpdateConnections;
@@ -53,6 +60,7 @@ namespace Task.InGame.Managers
             LevelEvents.OnLevelCompleted -= LoadNextLevel;
         }
 
+        
         private void LoadNextLevel()
         {
             StartCoroutine(LoadNewLevel(_loadedLevelReferenceIndex + 1));
@@ -60,7 +68,7 @@ namespace Task.InGame.Managers
 
         private IEnumerator LoadNewLevel(int i)
         {
-            if(i >= _levels.levelScenes.Length || i < 0)
+            if(i >= _loader.SceneReferences.LevelScenes.Count || i < 0)
             {
                 //TODO: handle last level completion
                 Debug.LogError($"Invalid level index value: {i}");
@@ -69,11 +77,14 @@ namespace Task.InGame.Managers
             if(_loadedLevelReferenceIndex != -1)
             {
                 Debug.Log($"Unload Level of build id {_loadedLevelReferenceIndex}");
-                yield return SceneManager.UnloadSceneAsync(_levels.levelScenes[_loadedLevelReferenceIndex].buildIndex);
+                //yield return SceneManager.UnloadSceneAsync(_loader.Levels.LevelScenes[_loadedLevelReferenceIndex].buildIndex);
+                yield return _loader.UnloadScene(_loader.SceneReferences.LevelScenes[_loadedLevelReferenceIndex].buildIndex);
             }
 
-            Debug.Log($"Load Level {_levels.levelScenes[i].sceneName} of build id {_levels.levelScenes[i].buildIndex}");
-            yield return SceneManager.LoadSceneAsync(_levels.levelScenes[i].buildIndex, LoadSceneMode.Additive);
+            Debug.Log($"Load Level {_loader.SceneReferences.LevelScenes[i].sceneName} of build id {_loader.SceneReferences.LevelScenes[i].buildIndex}");
+            //yield return SceneManager.LoadSceneAsync(_loader.Levels.LevelScenes[i].buildIndex, LoadSceneMode.Additive);
+            yield return _loader.LoadScene(_loader.SceneReferences.LevelScenes[i].buildIndex);
+
             _loadedLevelReferenceIndex = i;
             Debug.Log(_loadedLevelReferenceIndex);
 
