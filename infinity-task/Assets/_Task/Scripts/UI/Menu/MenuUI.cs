@@ -7,11 +7,7 @@ public class MenuUI : MonoBehaviour
 
     private void Start()
     {
-        _continuePlayingLabel.text = "Tap to play";
+        _continuePlayingLabel.text = "";//TODO: implement
     }
 
-    public void StartGame(int level)
-    {
-
-    }
 }

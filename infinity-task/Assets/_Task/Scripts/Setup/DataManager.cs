@@ -6,16 +6,17 @@ using Task.Data;
 using System.IO;
 using Task.InGame;
 using Task.InGame.Managers;
+using System;
 
 namespace Task.Core
 {
     public class DataManager : MonoBehaviour
     {
+        public static DataManager Instance { get; private set; }
         public static PlayerData PlayerData { get => _playerData; }
 
         private static PlayerData _playerData = null;
 
-        public static DataManager instance = null;
 
 
         private static string _filename = "PlayerData";
@@ -52,27 +53,50 @@ namespace Task.Core
 
         private void Awake()
         {
-            if(instance != null)
+            if(Instance != null)
             {
                 Destroy(this);
                 return;
             }
-            instance = this;
+            Instance = this;
             DontDestroyOnLoad(this);
             _playerData = LoadJson();
 
             //_path = Application.persistentDataPath;
         }
-        private void Start()
+
+        private void OnEnable()
         {
-            if(LevelManager.Instance != null)
+            if(Loader.Instance != null)
             {
-                LevelManager.Instance.LevelEvents.OnLevelCompleted += _playerData.LevelCompleted;
+                Loader.Instance.LevelEvents.OnLevelCompleted += _playerData.LevelCompleted;
+                Loader.Instance.LevelEvents.OnLevelCompleted += SaveJson;
+            }            
+        }
+        private void OnDisable()
+        {
+            if(Loader.Instance != null)
+            {
+                Loader.Instance.LevelEvents.OnLevelCompleted -= _playerData.LevelCompleted;
+                Loader.Instance.LevelEvents.OnLevelCompleted -= SaveJson;
             }
         }
+
+        private void SaveJson(SceneReference _, int i)
+        {
+            SaveJson();
+        }
+
         private void OnDestroy()
         {
             SaveJson();
+        }
+        private void OnApplicationPause(bool pauseStatus)
+        {
+            if(pauseStatus)
+            {
+                SaveJson();
+            }
         }
 
         private void CreatePlayerData()
