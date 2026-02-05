@@ -15,7 +15,7 @@ MonoBehaviour:
   sfx:
     clip: {fileID: 8300000, guid: afc36b94db3b3394f88831e7d0e9d364, type: 3}
     volume: 0.5
-    startTime: 0.1
+    startTime: 0.07
   music:
     clip: {fileID: 8300000, guid: 2180e41871dc34c4e995c382d3b1895f, type: 3}
     volume: 0.097

@@ -2,11 +2,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using Task.Data;
 using Task.Data.Visual;
 using Task.Level.Part;
 using Task.Core;
+using Task.Data;
 
 namespace Task.InGame.Managers
 {
@@ -15,6 +14,7 @@ namespace Task.InGame.Managers
         public static LevelManager Instance;
         public LevelEvents LevelEvents { get => _levelEvents; }
         public LevelVisualSettings LevelVisualData { get => _levelVisualData; }
+        public SceneReference CurrentLevel { get => _currentLevel; }
 
         [SerializeField] private LevelVisualSettings _levelVisualData;
         [SerializeField] private Loader _loader;
@@ -28,7 +28,7 @@ namespace Task.InGame.Managers
         private Vector2Int[] _energySourcePositions;
         private List<BaseLevelElement> _elementsList;//Wether connections are on/off
         private LightBulb[] _energyTargets; // we need to power up these
-
+        private SceneReference _currentLevel;
 
         public void LoadLevel(int i)
         {
@@ -47,7 +47,7 @@ namespace Task.InGame.Managers
             _levelEvents = new LevelEvents();
             DontDestroyOnLoad(this);
         }
-        
+
         private void OnEnable()
         {
             LevelEvents.OnPartChanged += UpdateConnections;
@@ -60,8 +60,8 @@ namespace Task.InGame.Managers
             LevelEvents.OnLevelCompleted -= LoadNextLevel;
         }
 
-        
-        private void LoadNextLevel()
+
+        private void LoadNextLevel(object _, int _1)
         {
             StartCoroutine(LoadNewLevel(_loadedLevelReferenceIndex + 1));
         }
@@ -84,11 +84,11 @@ namespace Task.InGame.Managers
             Debug.Log($"Load Level {_loader.SceneReferences.LevelScenes[i].sceneName} of build id {_loader.SceneReferences.LevelScenes[i].buildIndex}");
             //yield return SceneManager.LoadSceneAsync(_loader.Levels.LevelScenes[i].buildIndex, LoadSceneMode.Additive);
             yield return _loader.LoadScene(_loader.SceneReferences.LevelScenes[i].buildIndex);
-
+            _currentLevel = _loader.SceneReferences.LevelScenes[i];
             _loadedLevelReferenceIndex = i;
             Debug.Log(_loadedLevelReferenceIndex);
 
-            var levelElements = FindObjectsByType<BaseLevelElement>(FindObjectsSortMode.None);      
+            var levelElements = FindObjectsByType<BaseLevelElement>(FindObjectsSortMode.None);
             _elementsList = new List<BaseLevelElement>();
             _connectionDictionary = new Dictionary<Vector2Int, List<BaseLevelElement>>();
 
@@ -170,13 +170,9 @@ namespace Task.InGame.Managers
                 }
             }
 
-//#if UNITY_EDITOR
-//            if(remainingTargets > 0) Debug.Log($"{remainingTargets} energy targets remaining");
-//#endif
-
             if(success)
             {
-                LevelEvents.OnLevelCompleted?.Invoke();
+                LevelEvents.OnLevelCompleted?.Invoke(CurrentLevel, 3);
             }
         }
 

@@ -3,7 +3,7 @@ using Task.InGame.Managers;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace Task {
+namespace Task.Menu {
     public class MenuController : MonoBehaviour
     {
 

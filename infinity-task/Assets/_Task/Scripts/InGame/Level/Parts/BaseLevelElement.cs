@@ -35,7 +35,7 @@ namespace Task.Level.Part
         private void OnMouseDown()
         {
 #if UNITY_EDITOR
-            Debug.Log($"{this} pressed");
+            //Debug.Log($"{this} pressed");
 #endif
             //TODO: trigger events; trigger feedback
             LevelManager.Instance.LevelEvents.OnPartClicked?.Invoke(this);
