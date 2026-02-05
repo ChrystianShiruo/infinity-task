@@ -96,7 +96,6 @@ namespace Task.InGame.Managers
             yield return _loader.LoadScene(_loader.SceneReferences.OrderedLevelScenes[i]);
             _currentLevel = _loader.SceneReferences.OrderedLevelScenes[i];
             _loadedLevelReferenceIndex = i;
-            Debug.Log(_loadedLevelReferenceIndex);
 
             var levelElements = FindObjectsByType<BaseLevelElement>(FindObjectsSortMode.None);
             _elementsList = new List<BaseLevelElement>();

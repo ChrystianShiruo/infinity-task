@@ -8,6 +8,9 @@ namespace Task.InGame
     {
         public Action<BaseLevelElement> OnPartClicked;
         public Action<BaseLevelElement> OnPartChanged;
+        /// <summary>
+        /// (Level SceneReference, Score)
+        /// </summary>
         public Action<SceneReference, int> OnLevelCompleted;
     }
 }
