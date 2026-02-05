@@ -19,6 +19,7 @@ namespace Task.InGame.Managers
 
         [SerializeField] private LevelVisualSettings _levelVisualData;
         [SerializeField] private Loader _loader;
+        [SerializeField] private float _levelCompleteDelay = 2f;
 
 
         private LevelEvents _levelEvents;
@@ -30,7 +31,7 @@ namespace Task.InGame.Managers
         private List<BaseLevelElement> _elementsList;//Wether connections are on/off
         private LightBulb[] _energyTargets; // we need to power up these
         private SceneReference _currentLevel;
-
+        private WaitForSeconds _levelCompleteWaitForSeconds;
         public void LoadLevel(int buildIndex)
         {
             int i = _loader.SceneReferences.GetLevelIndex(buildIndex);
@@ -53,6 +54,7 @@ namespace Task.InGame.Managers
             Instance = this;
             _levelEvents = new LevelEvents();
             DontDestroyOnLoad(this);
+            _levelCompleteWaitForSeconds = new WaitForSeconds(_levelCompleteDelay);
         }
 
         private void OnEnable()
@@ -70,11 +72,15 @@ namespace Task.InGame.Managers
 
         private void LoadNextLevel(object _, int _1)
         {
-            StartCoroutine(LoadNewLevel(_loadedLevelReferenceIndex + 1, 2f));
+            StartCoroutine(LoadNewLevel(_loadedLevelReferenceIndex + 1, true));
         }
 
-        private IEnumerator LoadNewLevel(int i, float delay = 0f)
+        private IEnumerator LoadNewLevel(int i, bool delay = false)
         {
+            if(delay)
+            {
+                yield return _levelCompleteWaitForSeconds;
+            }
             if(_loadedLevelReferenceIndex != -1)
             {
                 Debug.Log($"Unload Level of build id {_loadedLevelReferenceIndex}");
@@ -119,6 +125,7 @@ namespace Task.InGame.Managers
             {
                 _energySourcePositions[j] = (Vector2Int.RoundToInt(energySources[j].transform.position));
                 energySources[j].transform.position = (Vector2)Vector2Int.RoundToInt(energySources[j].transform.position);
+                energySources[j].TogglePower(true);
             }
 
             _energyTargets = FindObjectsByType<LightBulb>(FindObjectsSortMode.None);//TODO: cache references
