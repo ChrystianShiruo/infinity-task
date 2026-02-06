@@ -88,6 +88,7 @@ namespace Task.InGame.Managers
             {
                 //TODO: handle last level completion
                 _loadedLevelReferenceIndex = -1;
+                _currentLevel = null;
                 yield return _loader.LoadMenu();
                 yield break;
             }
