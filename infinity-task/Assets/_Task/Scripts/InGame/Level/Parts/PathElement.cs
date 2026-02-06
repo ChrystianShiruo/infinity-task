@@ -20,8 +20,8 @@ namespace Task.Level.Part
 
             foreach(var item in lineRenderers)
             {
-                Vector3 worldStart = transform.TransformPoint(item.GetPosition(0));
-                Vector3 worldEnd = transform.TransformPoint(item.GetPosition(item.positionCount - 1));
+                Vector3 worldStart = item.transform.TransformPoint(item.GetPosition(0));
+                Vector3 worldEnd = item.transform.TransformPoint(item.GetPosition(item.positionCount - 1));
 
                 connectorPositions.Add(Vector2Int.RoundToInt((Vector2)worldStart));
                 connectorPositions.Add(Vector2Int.RoundToInt((Vector2)worldEnd));
@@ -39,7 +39,6 @@ namespace Task.Level.Part
         protected override void OnDenyElementInteraction()
         {
             //TODO: negative "cannot rotate this element" feedback
-            throw new System.NotImplementedException();
         }
 
         protected override void OnTogglePower(bool on)

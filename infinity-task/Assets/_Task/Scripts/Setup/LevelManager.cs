@@ -7,6 +7,7 @@ using Task.Level.Part;
 using Task.Core;
 using Task.Data;
 using System.Linq;
+using Unity.VisualScripting;
 
 namespace Task.InGame.Managers
 {
@@ -42,6 +43,21 @@ namespace Task.InGame.Managers
             StartCoroutine(LoadNewLevel(i));
 
         }
+
+        public IEnumerator UnloadCurrentLevel()
+        {
+            if(_currentLevel == null)
+            {
+                Debug.LogWarning($"no level set on LevelManager.CurrentLevel");
+                yield break;
+            }
+            Debug.Log($"Unload Level of build id {_loadedLevelReferenceIndex}");
+            yield return _loader.UnloadScene(_loader.SceneReferences.OrderedLevelScenes[_loadedLevelReferenceIndex]);
+
+            _loadedLevelReferenceIndex = -1;
+            _currentLevel = null;
+        }
+
 
         private void Awake()
         {
@@ -79,15 +95,16 @@ namespace Task.InGame.Managers
             {
                 yield return _levelCompleteWaitForSeconds;
             }
-            if(_loadedLevelReferenceIndex != -1)
-            {
-                Debug.Log($"Unload Level of build id {_loadedLevelReferenceIndex}");
-                yield return _loader.UnloadScene(_loader.SceneReferences.OrderedLevelScenes[_loadedLevelReferenceIndex]);
-            }
+            //if(_loadedLevelReferenceIndex != -1)
+            //{
+            //    Debug.Log($"Unload Level of build id {_loadedLevelReferenceIndex}");
+            //    yield return _loader.UnloadScene(_loader.SceneReferences.OrderedLevelScenes[_loadedLevelReferenceIndex]);
+            //}
+            yield return UnloadCurrentLevel();
+
             if(i >= _loader.SceneReferences.OrderedLevelScenes.Count || i < 0)
             {
-                //TODO: handle last level completion
-                _loadedLevelReferenceIndex = -1;
+                
                 yield return _loader.LoadMenu();
                 yield break;
             }
@@ -117,7 +134,7 @@ namespace Task.InGame.Managers
                 }
             }
 
-            var energySources = FindObjectsByType<EnergySource>(FindObjectsSortMode.None);//TODO: cache references
+            var energySources = FindObjectsByType<EnergySource>(FindObjectsSortMode.None);//TODO: MAYBE cache references on ScriptableObject
             _energySourcePositions = new Vector2Int[energySources.Length];
             for(int j = 0; j < energySources.Length; j++)
             {
@@ -126,7 +143,7 @@ namespace Task.InGame.Managers
                 energySources[j].TogglePower(true);
             }
 
-            _energyTargets = FindObjectsByType<LightBulb>(FindObjectsSortMode.None);//TODO: cache references
+            _energyTargets = FindObjectsByType<LightBulb>(FindObjectsSortMode.None);//TODO: MAYBE cache references on ScriptableObject
 
             EvaluateLevel();
         }
@@ -167,6 +184,7 @@ namespace Task.InGame.Managers
         {
             ResetPower();
             RunPowerUp();
+            CheckForSparks();
 
             bool success = true;
             int remainingTargets = 0;
@@ -221,5 +239,32 @@ namespace Task.InGame.Managers
                 }
             }
         }
+
+        private void CheckForSparks()
+        {
+            List<Vector3> leakPositions = new List<Vector3>();
+
+            foreach(var element in _elementsList)
+            {
+                if(!element.Powered) continue;
+
+                foreach(var pos in element.ConnectorPositions)
+                {
+                    if(_connectionDictionary.TryGetValue(pos, out var connectedElements))
+                    {
+                        if(connectedElements.Count < 2)
+                        {
+
+                            leakPositions.Add(new Vector3(pos.x, pos.y, 0));
+                        }
+                    }
+                }
+            }
+            if(ParticleManager.Instance != null)
+            {
+                ParticleManager.Instance.EmitSparkAtLocations(leakPositions);
+            }
+        }
+
     }
 }
