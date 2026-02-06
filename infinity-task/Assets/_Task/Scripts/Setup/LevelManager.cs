@@ -7,6 +7,7 @@ using Task.Level.Part;
 using Task.Core;
 using Task.Data;
 using System.Linq;
+using Unity.VisualScripting;
 
 namespace Task.InGame.Managers
 {
@@ -42,6 +43,21 @@ namespace Task.InGame.Managers
             StartCoroutine(LoadNewLevel(i));
 
         }
+
+        public IEnumerator UnloadCurrentLevel()
+        {
+            if(_currentLevel == null)
+            {
+                Debug.LogWarning($"no level set on LevelManager.CurrentLevel");
+                yield break;
+            }
+            Debug.Log($"Unload Level of build id {_loadedLevelReferenceIndex}");
+            yield return _loader.UnloadScene(_loader.SceneReferences.OrderedLevelScenes[_loadedLevelReferenceIndex]);
+
+            _loadedLevelReferenceIndex = -1;
+            _currentLevel = null;
+        }
+
 
         private void Awake()
         {
@@ -79,15 +95,16 @@ namespace Task.InGame.Managers
             {
                 yield return _levelCompleteWaitForSeconds;
             }
-            if(_loadedLevelReferenceIndex != -1)
-            {
-                Debug.Log($"Unload Level of build id {_loadedLevelReferenceIndex}");
-                yield return _loader.UnloadScene(_loader.SceneReferences.OrderedLevelScenes[_loadedLevelReferenceIndex]);
-            }
+            //if(_loadedLevelReferenceIndex != -1)
+            //{
+            //    Debug.Log($"Unload Level of build id {_loadedLevelReferenceIndex}");
+            //    yield return _loader.UnloadScene(_loader.SceneReferences.OrderedLevelScenes[_loadedLevelReferenceIndex]);
+            //}
+            yield return UnloadCurrentLevel();
+
             if(i >= _loader.SceneReferences.OrderedLevelScenes.Count || i < 0)
             {
-                _loadedLevelReferenceIndex = -1;
-                _currentLevel = null;
+                
                 yield return _loader.LoadMenu();
                 yield break;
             }
@@ -248,7 +265,6 @@ namespace Task.InGame.Managers
                 ParticleManager.Instance.EmitSparkAtLocations(leakPositions);
             }
         }
-
 
     }
 }

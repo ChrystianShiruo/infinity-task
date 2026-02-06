@@ -42,6 +42,10 @@ namespace Task.Core
 
         public IEnumerator LoadMenu()
         {
+            if(LevelManager.Instance != null && LevelManager.Instance.CurrentLevel != null)
+            {
+                yield return LevelManager.Instance.UnloadCurrentLevel();
+            }
             yield return LoadScene(SceneReferences.menuScene);
         }
         public IEnumerator UnloadMenu()
@@ -57,7 +61,7 @@ namespace Task.Core
                 return;
             }
             Instance = this;
-            
+
 
             DontDestroyOnLoad(this);
         }
