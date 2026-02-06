@@ -5,7 +5,6 @@ using Task.InGame.Managers;
 using Task.Data;
 using System;
 using UnityEngine.Rendering.Universal;
-using static UnityEditor.Progress;
 
 namespace Task.Level.Part
 {
