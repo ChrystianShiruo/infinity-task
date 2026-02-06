@@ -30,15 +30,8 @@ namespace Task.UI {
                 LevelButton lb = Instantiate(_levelButtonPrefab, _levelsParent).GetComponent<LevelButton>();
                 lb.Initialize(Loader.Instance.SceneReferences.OrderedLevelScenes[i], i);
                 
-                //lb.ToggleInteractable(i <= (DataManager.PlayerData.lastCompletedLevelIndex+1));//lock/unlock next level button
             }
-            //foreach(var item in DataManager.PlayerData.completedLevels)
-            //{
-            //    if(_levelButtonsDictionary.ContainsKey(item.buildIndex))
-            //    {
-            //        //TODO: add visual stuff(score, etc)
-            //    }
-            //}
+
         }
     }
 }

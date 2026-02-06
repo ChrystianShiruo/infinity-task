@@ -65,7 +65,6 @@ namespace Task.Level.Part
 #if UNITY_EDITOR
             //Debug.Log($"{this} pressed");
 #endif
-            //TODO: trigger events; trigger feedback
             LevelManager.Instance.LevelEvents.OnPartClicked?.Invoke(this);
             if(OnTryElementInteraction())
             {
