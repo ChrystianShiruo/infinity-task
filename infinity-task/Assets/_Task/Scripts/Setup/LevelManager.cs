@@ -86,7 +86,6 @@ namespace Task.InGame.Managers
             }
             if(i >= _loader.SceneReferences.OrderedLevelScenes.Count || i < 0)
             {
-                //TODO: handle last level completion
                 _loadedLevelReferenceIndex = -1;
                 _currentLevel = null;
                 yield return _loader.LoadMenu();
@@ -118,7 +117,7 @@ namespace Task.InGame.Managers
                 }
             }
 
-            var energySources = FindObjectsByType<EnergySource>(FindObjectsSortMode.None);//TODO: cache references
+            var energySources = FindObjectsByType<EnergySource>(FindObjectsSortMode.None);//TODO: MAYBE cache references on ScriptableObject
             _energySourcePositions = new Vector2Int[energySources.Length];
             for(int j = 0; j < energySources.Length; j++)
             {
@@ -127,7 +126,7 @@ namespace Task.InGame.Managers
                 energySources[j].TogglePower(true);
             }
 
-            _energyTargets = FindObjectsByType<LightBulb>(FindObjectsSortMode.None);//TODO: cache references
+            _energyTargets = FindObjectsByType<LightBulb>(FindObjectsSortMode.None);//TODO: MAYBE cache references on ScriptableObject
 
             EvaluateLevel();
         }

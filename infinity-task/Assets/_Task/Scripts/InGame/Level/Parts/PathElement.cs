@@ -39,7 +39,6 @@ namespace Task.Level.Part
         protected override void OnDenyElementInteraction()
         {
             //TODO: negative "cannot rotate this element" feedback
-            throw new System.NotImplementedException();
         }
 
         protected override void OnTogglePower(bool on)
