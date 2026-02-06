@@ -4,6 +4,7 @@ using UnityEngine;
 using Task.InGame.Managers;
 using Task.Data;
 using System;
+using UnityEngine.Rendering.Universal;
 
 namespace Task.Level.Part
 {
@@ -18,6 +19,7 @@ namespace Task.Level.Part
 
         private bool _powered = false;
         private Collider2D _collider;
+        private Light2D[] _volumetricLights;
 
         public abstract List<Vector2Int> UpdateConnectorPositions();
         protected abstract bool OnTryElementInteraction();
@@ -30,6 +32,7 @@ namespace Task.Level.Part
             lineRenderers = GetComponentsInChildren<LineRenderer>();
             spriteRenderer = GetComponent<SpriteRenderer>();
             _collider = GetComponent<Collider2D>();
+            _volumetricLights = GetComponentsInChildren<Light2D>();
         }
         private void OnEnable()
         {
@@ -48,6 +51,11 @@ namespace Task.Level.Part
 
         private void Start()
         {
+            foreach(var item in _volumetricLights)
+            {
+                item.color = LevelManager.Instance.LevelVisualData.on;
+            }
+
             SetColor(LevelManager.Instance.LevelVisualData.off);
         }
         private void DisableInteraction(SceneReference _, int i)
@@ -85,6 +93,11 @@ namespace Task.Level.Part
             _powered = on;
             var color = on ? LevelManager.Instance.LevelVisualData.on : LevelManager.Instance.LevelVisualData.off;
             SetColor(color);
+
+            foreach(var item in _volumetricLights)
+            {
+                item.enabled = on;
+            }
 
             OnTogglePower(on);
         }

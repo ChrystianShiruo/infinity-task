@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 074d36249aabc834089209e9cae19c55, type: 3}
   m_Name: DefaultIngameVisuals
   m_EditorClassIdentifier: 
-  on: {r: 1, g: 0.9882353, b: 0.68235296, a: 1}
+  on: {r: 1, g: 0.7521934, b: 0.3443396, a: 1}
   off: {r: 0.5764706, g: 0.5764706, b: 0.5764706, a: 1}
   widthOn: 0.26
   widthOff: 0.12
