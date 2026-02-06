@@ -7,9 +7,5 @@ namespace Task.UI.Elements
         [SerializeField] protected RectTransform rectTransform;
         protected abstract void OnButtonClick();
 
-        private void OnMouseUpAsButton()
-        {
-            OnButtonClick();
-        }
     }
 }
